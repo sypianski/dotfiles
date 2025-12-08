@@ -10,6 +10,12 @@ alias vps 'ssh yaqub@188.166.23.122'
 alias masawayh 'ssh yaqub@188.166.23.122'
 alias cc 'claude --dangerously-skip-permissions'
 
+# Paste Android clipboard to tmux
+function cbr
+    termux-clipboard-get | tmux load-buffer -
+    tmux paste-buffer
+end
+
 # API keys (loaded from separate secure file)
 if test -f "$HOME/.secrets"
     source "$HOME/.secrets"
