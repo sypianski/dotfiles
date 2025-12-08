@@ -1,0 +1,104 @@
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/README.md:"   'pattern'    : can be set to wilder#python_fuzzy_delimiter_pattern() for stricter fuzzy matching
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/README.md:      \       'pattern': wilder#python_fuzzy_pattern(),
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/README.md:      -- can be set to wilder#python_fuzzy_delimiter_pattern() for stricter fuzzy matching
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/README.md:      pattern = wilder.python_fuzzy_pattern(),
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/README.md:      \         'pattern': wilder#python_fuzzy_pattern({
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/README.md:      \       'pattern': wilder#python_fuzzy_pattern({
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/README.md:        pattern = wilder.python_fuzzy_pattern({
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/README.md:      pattern = wilder.python_fuzzy_pattern({
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:" DEPRECATED: Use wilder#python_fuzzy_pattern()
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzy_match(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#python_fuzzy_pattern', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzy_pattern(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return wilder#pipe#python_fuzzy_match#(l:args)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:" DEPRECATED: Use wilder#python_fuzzy_delimiter_pattern()
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzy_delimiter(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#python_fuzzy_delimiter_pattern', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzy_delimiter_pattern(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return wilder#pipe#python_fuzzy_delimiter#(l:args)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:" DEPRECATED: Use wilder#python_fuzzywuzzy_sorter()
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#python_fuzzywuzzy_sorter', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzywuzzy_sorter(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#transform#python_fuzzywuzzy_sorter', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:" DEPRECATED: use wilder#python_fuzzywuzzy_sort()
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzywuzzy(ctx, xs, query) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#python_fuzzywuzzy_sort', [a:ctx, {}, a:xs, a:query])
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzywuzzy_sort(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#transform#python_fuzzywuzzy_sort', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:" DEPRECATED: use wilder#python_fuzzy_filter()
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#python_fuzzy_filter', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzy_filter(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#transform#python_fuzzy_filter', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:function! wilder#python_fuzzy_filt(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:  return call('wilder#transform#python_fuzzy_filt', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:    let l:Pattern = wilder#python_fuzzy_pattern()
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder.vim:    let l:Pattern = wilder#python_fuzzy_delimiter_pattern()
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/cmdline.vim:      let l:Filter = wilder#python_fuzzy_filter()
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/cmdline.vim:    let l:pcre2_pattern = wilder#transform#make_python_fuzzy_regex(l:match_arg)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/pipe/python_fuzzy_delimiter.vim:function! wilder#pipe#python_fuzzy_delimiter#(args) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/pipe/python_fuzzy_match.vim:function! wilder#pipe#python_fuzzy_match#(args) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:function! wilder#transform#python_fuzzywuzzy_sorter(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:  return {ctx, xs, query -> wilder#transform#python_fuzzywuzzy_sort(ctx, l:opts, xs, query)}
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:function! wilder#transform#python_fuzzywuzzy_sort(ctx, opts, xs, query) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:  return {ctx -> _wilder_python_fuzzywuzzy_sort(ctx, a:opts, a:xs, a:query)}
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:    return call('wilder#python_fuzzy_filter', a:000)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:    return wilder#transform#python_fuzzy_filt(a:ctx, a:opts, a:candidates, a:query)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:function! wilder#transform#python_fuzzy_filter(...) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:  return {ctx, xs, q -> wilder#transform#python_fuzzy_filt(ctx, l:opts, xs, q)}
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:function! wilder#transform#python_fuzzy_filt(ctx, opts, candidates, query) abort
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:  let l:regex = wilder#transform#make_python_fuzzy_regex(a:query)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:  return {ctx -> _wilder_python_fuzzy_filt(ctx, a:opts, a:candidates, l:regex)}
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/transform.vim:function! wilder#transform#make_python_fuzzy_regex(query)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/yarp.vim:  function! _wilder_python_fuzzy_filt(...)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/autoload/wilder/yarp.vim:  function! _wilder_python_fuzzywuzzy_sort(...)
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:                                    *wilder#python_fuzzy_pattern()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzy_pattern([{options}])
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:                                    *wilder#python_fuzzy_delimiter_pattern()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzy_delimiter_pattern([{options}])
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            |wilder#python_fuzzy_pattern()|,
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            |wilder#python_fuzzy_delimiter_pattern()| and
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            |wilder#python_fuzzywuzzy_sorter()| can be used here.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Default: |wilder#python_fuzzy_filter()| if `language` is 'python'
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            |wilder#python_fuzzywuzzy_sorter()| can be used here.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Filters the list with |wilder#python_fuzzy_filter()|.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Sorts the list with |wilder#python_fuzzywuzzy_sorter()|. The Python3
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Uses |wilder#python_fuzzy_filt()| if using Neovim or Vim with
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:                                    *wilder#python_fuzzy_filt()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzy_filt({ctx}, {opts}, {candidates}, {query})
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzy_filter()        *wilder#python_fuzzy_filter()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            |wilder#python_fuzzy_filt()|. Can be used as the `fuzzy_filter`
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:                                    *wilder#python_fuzzywuzzy_sort()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzywuzzy_sort({ctx}, {opts}, {candidates}, {query})
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:                                    *wilder#python_fuzzywuzzy_sorter()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzywuzzy_sorter([{partial}])
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Returns a sorter which uses |wilder#python_fuzzywuzzy_sort()| to
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            |wilder#python_fuzzywuzzy_sort()| as an option.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:                                    *wilder#python_fuzzy_match()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzy_match([{options}])
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Deprecated: Use |wilder#python_fuzzy_pattern()|.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:                                    *wilder#python_fuzzy_delimiter()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzy_delimiter([{options}])
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Deprecated: Use |wilder#python_fuzzy_delimiter_pattern()|.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Deprecated: Use |wilder#python_fuzzy_filter()|.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:                                    *wilder#python_fuzzywuzzy()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:wilder#python_fuzzywuzzy({ctx}, {candidates}, {query})
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Deprecated: Use |wilder#python_fuzzywuzzy_sort()|.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/wilder.txt:            Deprecated: Use |wilder#python_fuzzywuzzy_sort()|.
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzy_delimiter()	wilder.txt	/*wilder#python_fuzzy_delimiter()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzy_delimiter_pattern()	wilder.txt	/*wilder#python_fuzzy_delimiter_pattern()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzy_filt()	wilder.txt	/*wilder#python_fuzzy_filt()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzy_filter()	wilder.txt	/*wilder#python_fuzzy_filter()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzy_match()	wilder.txt	/*wilder#python_fuzzy_match()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzy_pattern()	wilder.txt	/*wilder#python_fuzzy_pattern()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzywuzzy()	wilder.txt	/*wilder#python_fuzzywuzzy()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzywuzzy_sort()	wilder.txt	/*wilder#python_fuzzywuzzy_sort()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/doc/tags:wilder#python_fuzzywuzzy_sorter()	wilder.txt	/*wilder#python_fuzzywuzzy_sorter()*
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzy_match',
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzy_pattern',
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzy_delimiter',
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzy_delimiter_pattern',
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzywuzzy_sorter',
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzywuzzy',
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzywuzzy_sort',
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzy_filter',
+/data/data/com.termux/files/home/.local/share/nvim/lazy/wilder.nvim/lua/wilder.lua:  'python_fuzzy_filt',
