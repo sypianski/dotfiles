@@ -9,6 +9,8 @@ alias obsidian 'ssh jakub@100.110.74.7 "cd ~/vultoj/vulto && vim"'
 alias vps 'ssh yaqub@188.166.23.122'
 alias masawayh 'ssh yaqub@188.166.23.122'
 alias cc 'claude --dangerously-skip-permissions'
+alias corne42 '~/klavaro/zmk/flash.sh'
+alias reload 'source ~/fish/config.fish'
 
 # Paste Android clipboard to tmux
 function cbr
@@ -92,6 +94,22 @@ function theme
     echo "Switched to theme: $argv[1]"
 end
 fish_hybrid_key_bindings
+
+# Syncthing toggle for vault sync
+function sync
+    switch $argv[1]
+        case on
+            systemctl --user start syncthing
+            echo "Real-time sync ON"
+        case off
+            systemctl --user stop syncthing
+            echo "Syncthing paused - using git"
+        case status
+            systemctl --user is-active syncthing
+        case '*'
+            echo "Usage: sync [on|off|status]"
+    end
+end
 
 # Auto-start tmux
 if status is-interactive
