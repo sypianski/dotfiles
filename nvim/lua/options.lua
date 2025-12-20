@@ -25,7 +25,7 @@ vim.g.vim_markdown_conceal_code_blocks = 0
 vim.opt.foldlevelstart = 99
 
 -- Leader key
-vim.g.mapleader = " "
+vim.g.mapleader = "<Tab>"
 
 -- Clipboard disabled - using keymaps in keymaps.lua instead
 
