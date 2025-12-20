@@ -1,3 +1,7 @@
 function fish_prompt
-     echo '> '; 
+    if set -q SSH_CLIENT
+        echo 'masawayh > '
+    else
+        echo 'macOS > '
+    end
 end

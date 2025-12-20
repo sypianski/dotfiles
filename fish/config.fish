@@ -2,6 +2,9 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
+# Add pipx binaries to PATH
+fish_add_path ~/.local/bin
+
 # Aliases
 alias mac 'ssh sypianski@100.110.74.7'
 alias highlights 'ssh jakub@100.110.74.7 "cd ~/vultoj/vulto_de_sajeso && python3 highlight_importer.py"'
@@ -111,8 +114,34 @@ function sync
     end
 end
 
-# Auto-start tmux
+# Funkcja do wstawiania komendy attach (musi być zdefiniowana globalnie)
+function _vps_tmux_attach --on-event fish_prompt
+    if set -q __vps_attach_pending
+        set -e __vps_attach_pending
+        functions -e _vps_tmux_attach
+        commandline -i 'tmux attach -t '
+    end
+end
+
+# Auto-start tmux (różne zachowanie na VPS vs lokalnie)
 if status is-interactive
     and not set -q TMUX
-    tmux attach || tmux new
+    if test (hostname) = "masawayh"
+        # VPS: pokaż sesje i przygotuj komendę attach
+        echo "─── Sesioni di tmux ───"
+        tmux ls 2>/dev/null; or echo "(nula aktiva sesioni)"
+        echo ""
+        set -g __vps_attach_pending 1
+    else
+        # Lokalnie: auto-attach do sesji main
+        tmux attach -dt main || tmux new -s main
+    end
 end
+
+# ccusage - monitoring tokenów Claude Code
+alias ccu='ccusage'
+alias ccul='ccusage blocks --live'
+alias ccub='ccusage blocks'
+alias ccum='ccusage monthly'
+alias ccud='ccusage daily'
+alias ccm='claude-monitor --plan max5 --timezone Europe/Rome'
