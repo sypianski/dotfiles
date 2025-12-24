@@ -147,9 +147,9 @@ if status is-interactive
             set -g __nubi_muntita 1
             __auto_muntar_nubi 2>/dev/null &
         end
-        # VPS: startar monitor-sesiono kun glutoni-vido (se ne ekzistas)
+        # VPS: startar monitor-sesiono kun btop (se ne ekzistas)
         if not tmux has-session -t monitor 2>/dev/null
-            tmux new-session -d -s monitor fish -c 'glutoni-vido'
+            tmux new-session -d -s monitor btop
         end
         # VPS: preparar attach-komando
         set -g __vps_attach_pending 1
@@ -460,7 +460,7 @@ function mon
     tmux switch-client -t monitor 2>/dev/null
     or tmux attach -t monitor 2>/dev/null
     or begin
-        tmux new-session -d -s monitor fish -c glutoni-vido
+        tmux new-session -d -s monitor btop
         tmux attach -t monitor
     end
 end
