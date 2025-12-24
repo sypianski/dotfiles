@@ -304,7 +304,7 @@ function glutoni-vido
 
         echo
         echo "$cyan─────────── PROCESI ───────────$norm"
-        printf " $dim%-14s %4s %4s %6s$norm\n" "NOMO" "RAM" "CPU" "PID"
+        printf " $dim  %-14s %4s %4s %6s$norm\n" "NOMO" "RAM" "CPU" "PID"
 
         # Procesi (reuzar logiko de glutoni)
         set -l tmux_map
@@ -314,8 +314,14 @@ function glutoni-vido
 
         set -l procs (ps aux --sort=-%mem | awk 'NR>1 && ($4>=1 || $3>=1) {print $2, $4, $3, $11}' | grep -v -E '^[0-9]+ [0-9.]+ [0-9.]+ (ps|awk|grep)' | head -8)
 
+        # Stokar PID-oj por interaga ocido
+        set -g __gv_pids
+        set -l proc_num 0
+
         for proc in $procs
+            set proc_num (math $proc_num + 1)
             set -l pid (echo $proc | awk '{print $1}')
+            set -a __gv_pids $pid
             set -l ram (echo $proc | awk '{printf "%.0f", $2}')
             set -l cpu (echo $proc | awk '{printf "%.0f", $3}')
             set -l rawcmd (echo $proc | awk '{print $4}')
@@ -346,7 +352,7 @@ function glutoni-vido
                 set color $yellow
             end
 
-            printf " $color%-14s %3s%% %3s%% %6s$norm\n" $name $ram $cpu $pid
+            printf " $cyan$proc_num$norm$color %-14s %3s%% %3s%% %6s$norm\n" $name $ram $cpu $pid
         end
 
         # Detektar mortinta claude-rg (0% CPU, uzas RAM)
@@ -358,9 +364,26 @@ function glutoni-vido
         end
 
         echo
-        echo $dim"(Ctrl+C por cesigar)"$norm
+        echo $dim"[1-8] ocidar procesin  [q] elir  [Enter] refreŝigar"$norm
 
-        sleep 10
+        # Atendi enigon aŭ timeout
+        set -l input_key ""
+        read -n 1 -t 10 input_key 2>/dev/null
+
+        # Procesi enigon
+        if test "$input_key" = "q"
+            echo "Ĝis revido!"
+            break
+        else if string match -qr '^[1-8]$' "$input_key"
+            set -l kill_idx $input_key
+            if test $kill_idx -le (count $__gv_pids)
+                set -l kill_pid $__gv_pids[$kill_idx]
+                kill $kill_pid 2>/dev/null
+                echo "$red""Ocidita PID $kill_pid$norm"
+                sleep 1
+            end
+        end
+        # Alie (Enter aŭ timeout): simple refreŝigar
     end
 end
 
