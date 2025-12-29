@@ -101,6 +101,10 @@ function temo
 end
 fish_hybrid_key_bindings
 
+# fish-ai keybinding for hybrid mode
+bind -M insert \ea _fish_ai_autocomplete_or_fix
+bind \ea _fish_ai_autocomplete_or_fix
+
 # Syncthing toggle por vault sync
 function sinkronigar
     switch $argv[1]
@@ -111,11 +115,15 @@ function sinkronigar
             systemctl --user stop syncthing
             echo "Syncthing paused - using git"
         case status
-            systemctl --user is-active syncthing
+            systemctl --user status syncthing
+        case restart r
+            systemctl --user restart syncthing
+            echo "Syncthing restarted"
         case '*'
-            echo "Usage: sync [on|off|status]"
+            echo "Usage: sinkronigar [on|off|status|restart]"
     end
 end
+alias sync 'sinkronigar'  # szybki alias
 
 # Funkcja do wstawiania komendy attach (musi być zdefiniowana globalnie)
 function _vps_tmux_attach --on-event fish_prompt
@@ -231,10 +239,11 @@ end
 
 # glutoni-vido: kontinua monitoro kun grafiki (vido = view)
 function glutoni-vido
-    # Historio por grafiki (maxime 30 valoroj)
+    # Historio por grafiki
     set -g __cpu_historio
     set -g __ram_historio
     set -l bloki "▁▂▃▄▅▆▇█"
+    set -l graph_width 28
 
     while true
         clear
@@ -255,58 +264,107 @@ function glutoni-vido
         # Aktualigar historio
         set -a __cpu_historio $cpu_percent
         set -a __ram_historio $mem_percent
-        if test (count $__cpu_historio) -gt 30
+        if test (count $__cpu_historio) -gt $graph_width
             set __cpu_historio $__cpu_historio[2..-1]
             set __ram_historio $__ram_historio[2..-1]
         end
 
-        # Titolo
+        # Titolo (50 znaków)
         echo
-        echo "$cyan══════════ GLUTONI-VIDO ══════════$norm"
-        echo
+        echo "$cyan═══════════════════ GLUTONI ════════════════════$norm"
 
         # CPU grafiko
         set -l cpu_graph ""
-        for val in $__cpu_historio
+        set -l start_idx 1
+        if test (count $__cpu_historio) -gt $graph_width
+            set start_idx (math (count $__cpu_historio) - $graph_width + 1)
+        end
+        for i in (seq $start_idx (count $__cpu_historio))
+            set -l val $__cpu_historio[$i]
             set -l idx (math "round($val / 12.5) + 1")
             test $idx -lt 1; and set idx 1
             test $idx -gt 8; and set idx 8
             set cpu_graph "$cpu_graph"(string sub -s $idx -l 1 $bloki)
         end
+        while test (string length $cpu_graph) -lt $graph_width
+            set cpu_graph " $cpu_graph"
+        end
         set -l cpu_color $norm
         test $cpu_percent -ge 80; and set cpu_color $red
         test $cpu_percent -ge 50 -a $cpu_percent -lt 80; and set cpu_color $yellow
-        printf "$cyan%s$norm %s %s%3d%%$norm\n" "procesoro:" "$dim$cpu_graph$norm" $cpu_color $cpu_percent
+        set -l load (awk '{printf "%.1f", $1}' /proc/loadavg)
+        printf "$cyan%s$norm %s %s%2d%%$norm $dim%s$norm\n" "cpu" "$cpu_graph" $cpu_color $cpu_percent $load
 
         # RAM grafiko
         set -l ram_graph ""
-        for val in $__ram_historio
+        set start_idx 1
+        if test (count $__ram_historio) -gt $graph_width
+            set start_idx (math (count $__ram_historio) - $graph_width + 1)
+        end
+        for i in (seq $start_idx (count $__ram_historio))
+            set -l val $__ram_historio[$i]
             set -l idx (math "round($val / 12.5) + 1")
             test $idx -lt 1; and set idx 1
             test $idx -gt 8; and set idx 8
             set ram_graph "$ram_graph"(string sub -s $idx -l 1 $bloki)
         end
+        while test (string length $ram_graph) -lt $graph_width
+            set ram_graph " $ram_graph"
+        end
         set -l ram_color $norm
         test $mem_avail -lt 512; and set ram_color $red
         test $mem_avail -lt 1024 -a $mem_avail -ge 512; and set ram_color $yellow
         set -l mem_avail_gb (printf "%.1f" (math "$mem_avail / 1024"))
-        set -l mem_total_gb (printf "%.1f" (math "$mem_total / 1024"))
-        printf "$cyan%s$norm     %s %s%3d%%$norm  $dim($mem_avail_gb/$mem_total_gb g libera)$norm\n" "memoro:" "$dim$ram_graph$norm" $ram_color $mem_percent
+        printf "$cyan%s$norm %s %s%2d%%$norm $dim%sg$norm\n" "ram" "$ram_graph" $ram_color $mem_percent $mem_avail_gb
 
-        # Permuto (swap)
+        echo
+        # Swap (z paskiem 28 znaków)
         set -l swap_info (free -m | awk '/^Swap:/ {printf "%d %d", $3, $2}')
         set -l swap_used (echo $swap_info | awk '{print $1}')
         set -l swap_total (echo $swap_info | awk '{print $2}')
         if test $swap_total -gt 0
-            set -l swap_gb (printf "%.1f/%.1f" (math "$swap_used / 1024") (math "$swap_total / 1024"))
-            printf "$cyan%s$norm     %sg\n" "permuto:" $swap_gb
+            set -l swap_pct (math "round($swap_used * 100 / $swap_total)")
+            set -l swap_filled (math "round($swap_pct * $graph_width / 100)")
+            set -l swap_bar ""
+            for i in (seq 1 $graph_width)
+                if test $i -le $swap_filled
+                    set swap_bar "$swap_bar▪"
+                else
+                    set swap_bar "$swap_bar·"
+                end
+            end
+            set -l swap_color $norm
+            test $swap_pct -ge 50; and set swap_color $yellow
+            test $swap_pct -ge 80; and set swap_color $red
+            set -l swap_gb (printf "%.1f" (math "$swap_used / 1024"))
+            printf "$cyan%s$norm %s %s%2d%%$norm $dim%sg$norm\n" "swp" $swap_bar $swap_color $swap_pct $swap_gb
         end
 
-        echo
-        echo "$cyan─────────── PROCESI ───────────$norm"
-        printf " $dim  %-14s %4s %4s %6s$norm\n" "NOMO" "RAM" "CPU" "PID"
+        # Disk (z paskiem 28 znaków)
+        set -l disk_info (df / | awk 'NR==2 {print $3, $2, $4}')
+        set -l disk_used (echo $disk_info | awk '{print $1}')
+        set -l disk_total (echo $disk_info | awk '{print $2}')
+        set -l disk_avail_h (df -h / | awk 'NR==2 {print $4}')
+        set -l disk_pct (math "round($disk_used * 100 / $disk_total)")
+        set -l disk_filled (math "round($disk_pct * $graph_width / 100)")
+        set -l disk_bar ""
+        for i in (seq 1 $graph_width)
+            if test $i -le $disk_filled
+                set disk_bar "$disk_bar▪"
+            else
+                set disk_bar "$disk_bar·"
+            end
+        end
+        set -l disk_color $norm
+        test $disk_pct -ge 80; and set disk_color $yellow
+        test $disk_pct -ge 90; and set disk_color $red
+        printf "$cyan%s$norm %s %s%2d%%$norm $dim%s$norm\n" "dsk" $disk_bar $disk_color $disk_pct $disk_avail_h
 
-        # Procesi (reuzar logiko de glutoni)
+        echo
+        echo "$cyan─────────────────── procesi ────────────────────$norm"
+        printf "$dim  %-24s %5s %5s$norm\n" "" "ram" "cpu"
+
+        # Procesi
         set -l tmux_map
         for pane in (tmux list-panes -a -F '#{pane_pid} #{session_name}:#{window_index}' 2>/dev/null)
             set -a tmux_map $pane
@@ -338,12 +396,14 @@ function glutoni-vido
                     set -l pane_pid (echo $entry | awk '{print $1}')
                     if pgrep -P $pane_pid 2>/dev/null | grep -q "^$pid\$"
                         set -l sess (echo $entry | awk -F: '{print $1}' | awk '{print $2}')
-                        set name "claude:$sess"
+                        if test -n "$sess"
+                            set name "claude: $sess"
+                        end
                         break
                     end
                 end
             end
-            set name (string sub -l 14 $name)
+            set name (string sub -l 24 $name)
 
             set -l color $norm
             if test $ram -ge 10 -o $cpu -ge 50
@@ -352,38 +412,40 @@ function glutoni-vido
                 set color $yellow
             end
 
-            printf " $cyan$proc_num$norm$color %-14s %3s%% %3s%% %6s$norm\n" $name $ram $cpu $pid
+            printf "$cyan%s$norm$color %-24s %4s%% %4s%%$norm\n" $proc_num $name $ram $cpu
         end
 
-        # Detektar mortinta claude-rg (0% CPU, uzas RAM)
+        # Detektar mortinta claude-rg
         set -l dead_rg (ps -eo pid,%cpu,cmd --no-headers | grep -E 'claude.*rg|\.local/share/claude/versions' | grep -v grep | grep -cE '^\s*[0-9]+\s+0\.0\s')
         if test $dead_rg -ge 2
-            echo
-            echo "$yellow⚠ $dead_rg mortinta claude-rg procesi detektita$norm"
-            echo "$dim  cleanup-claude-rg  # ocidar manuale$norm"
+            echo "$yellow⚠ $dead_rg dead rg$norm"
         end
 
         echo
-        echo $dim"[1-8] ocidar procesin  [q] elir  [Enter] refreŝigar"$norm
+        echo $dim"[1-8]kill [q]uit [r]efresh"$norm
+        echo
 
-        # Atendi enigon aŭ timeout
-        set -l input_key ""
-        read -n 1 -t 10 input_key 2>/dev/null
-
-        # Procesi enigon
-        if test "$input_key" = "q"
-            echo "Ĝis revido!"
-            break
-        else if string match -qr '^[1-8]$' "$input_key"
-            set -l kill_idx $input_key
-            if test $kill_idx -le (count $__gv_pids)
-                set -l kill_pid $__gv_pids[$kill_idx]
-                kill $kill_pid 2>/dev/null
-                echo "$red""Ocidita PID $kill_pid$norm"
-                sleep 1
+        # Atendi enigon aŭ timeout (10s)
+        set -l input_key (bash -c 'read -t 10 -n 1 -s key; echo $key')
+        if test -n "$input_key"
+            switch $input_key
+                case q Q
+                    break
+                case 1 2 3 4 5 6 7 8
+                    set -l kill_idx $input_key
+                    if test $kill_idx -le (count $__gv_pids)
+                        set -l kill_pid $__gv_pids[$kill_idx]
+                        kill -9 $kill_pid 2>/dev/null
+                        echo ""
+                        echo "$red✗ Ocidita PID $kill_pid$norm"
+                        sleep 1
+                    end
+                case r R
+                    # Tuja refreŝigo
+                    continue
             end
         end
-        # Alie (Enter aŭ timeout): simple refreŝigar
+        # Timeout: aŭtomata refreŝigo
     end
 end
 
@@ -450,7 +512,9 @@ function glutoni
                     set -l pane_pid (echo $entry | awk '{print $1}')
                     if pgrep -P $pane_pid 2>/dev/null | grep -q "^$pid\$"
                         set -l sess (echo $entry | awk -F: '{print $1}' | awk '{print $2}')
-                        set name "claude:$sess"
+                        if test -n "$sess"
+                            set name "claude: $sess"
+                        end
                         break
                     end
                 end
@@ -478,6 +542,9 @@ alias memoro 'glutoni'
 alias procesoro 'glutoni'
 alias gv 'glutoni-vido'
 
+# Recetageto - scraper przepisów z jadłonomia
+alias recetageto '~/iloj/recetageto/.venv/bin/python ~/iloj/recetageto/scraper.py'
+
 # mon: rapide irar a monitor-sesiono
 function mon
     tmux switch-client -t monitor 2>/dev/null
@@ -490,6 +557,23 @@ end
 
 # t: tmux rapida komandi
 function t
+    # Nula argumenti: startar/atar monitor-sesiono
+    if test -z "$argv[1]"
+        set -l sess mon
+        if not tmux has-session -t $sess 2>/dev/null
+            # Krear nova sesiono kun gv en fenestro 0
+            tmux new-session -d -s $sess -n gv
+            tmux send-keys -t $sess:gv gv Enter
+        end
+        # Atar aŭ ŝanĝi
+        if set -q TMUX
+            tmux switch-client -t $sess
+        else
+            tmux attach -t $sess
+        end
+        return
+    end
+
     switch $argv[1]
         case a atar
             # Atar a sesiono (attach)
@@ -521,13 +605,16 @@ function t
             end
         case l listar
             tmux ls
-        case '*'
+        case h help
             echo "t - tmux rapida komandi"
             echo ""
+            echo "  t           - startar/atar monitor (gv)"
             echo "  t a [nomo]  - atar a sesiono"
             echo "  t n [nomo]  - nova sesiono"
             echo "  t k [nomo]  - kilar sesiono"
             echo "  t l         - listar sesioni"
+        case '*'
+            echo "Nekonata: $argv[1]. Uzu 't h' por helpo."
     end
 end
 
@@ -567,7 +654,7 @@ function fish_greeting
     end
 
     # Claude sessions
-    set -l cc_count (pgrep -fc 'claude.*--dangerously-skip-permissions' 2>/dev/null; or echo 0)
+    set -l cc_count (pgrep -fc 'claude.*--dangerously-skip-permissions' 2>/dev/null; or echo 0)[-1]
 
     # Tmux sessions (names only)
     set -l tmux_names
