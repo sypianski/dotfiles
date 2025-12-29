@@ -7,8 +7,8 @@ fish_add_path ~/.local/bin
 
 # Aliases
 alias mac 'ssh sypianski@100.110.74.7'
-alias highlights 'ssh jakub@100.110.74.7 "cd ~/vultoj/vulto_de_sajeso && python3 highlight_importer.py"'
-alias obsidian 'ssh jakub@100.110.74.7 "cd ~/vultoj/vulto && vim"'
+alias highlights 'ssh jakub@100.110.74.7 "cd ~/vulti/vulto_de_sajeso && python3 highlight_importer.py"'
+alias obsidian 'ssh jakub@100.110.74.7 "cd ~/vulti/vulto && vim"'
 alias vps 'ssh yaqub@188.166.23.122'
 alias masawayh 'ssh yaqub@188.166.23.122'
 alias cc 'claude --dangerously-skip-permissions'
@@ -543,7 +543,7 @@ alias procesoro 'glutoni'
 alias gv 'glutoni-vido'
 
 # Recetageto - scraper przepisów z jadłonomia
-alias recetageto '~/iloj/recetageto/.venv/bin/python ~/iloj/recetageto/scraper.py'
+alias recetageto '~/utensili/recetageto/.venv/bin/python ~/utensili/recetageto/scraper.py'
 
 # mon: rapide irar a monitor-sesiono
 function mon
