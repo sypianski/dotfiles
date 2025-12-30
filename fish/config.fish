@@ -13,7 +13,15 @@ alias vps 'ssh yaqub@188.166.23.122'
 alias masawayh 'ssh yaqub@188.166.23.122'
 alias cc 'claude --dangerously-skip-permissions'
 alias corne42 '~/klavaro/zmk/flash.sh'
-alias rikargar 'source ~/fish/config.fish'  # reload config
+function rikargar  # reload fish + tmux config
+    source ~/fish/config.fish
+    if set -q TMUX
+        tmux source-file ~/.tmux.conf
+        echo "Fish + tmux reloaded"
+    else
+        echo "Fish reloaded"
+    end
+end
 alias muntar-gdrive 'rclone mount gdrive: ~/mnt/gdrive --vfs-cache-mode full --daemon'
 alias muntar-dropbox 'rclone mount dropbox: ~/mnt/dropbox --vfs-cache-mode full --daemon'
 
@@ -198,15 +206,6 @@ function sync-status
 end
 alias ss 'sync-status'
 
-# Funkcja do wstawiania komendy attach (musi być zdefiniowana globalnie)
-function _vps_tmux_attach --on-event fish_prompt
-    if set -q __vps_attach_pending
-        set -e __vps_attach_pending
-        functions -e _vps_tmux_attach
-        commandline -i 'tmux attach -t '
-    end
-end
-
 # Auto-muntar nubo-diski (nur sur VPS, nur unfoye)
 function __auto_muntar_nubi
     # gdrive
@@ -222,7 +221,7 @@ end
 # Auto-start tmux (diferanta konduto sur VPS vs lokale)
 if status is-interactive
     and not set -q TMUX
-    if test (hostname) = "masawayh"
+    if string match -q '*masawayh*' (hostname)
         # VPS: muntar nubi se ne ja muntita
         if not set -q __nubi_muntita
             set -g __nubi_muntita 1
@@ -232,8 +231,7 @@ if status is-interactive
         if not tmux has-session -t monitor 2>/dev/null
             tmux new-session -d -s monitor btop
         end
-        # VPS: preparar attach-komando
-        set -g __vps_attach_pending 1
+        # VPS: nur montrar saluto, uzanto elektas sesion
     else
         # Lokale: auto-attach a sesiono main
         tmux attach -dt main || tmux new -s main
@@ -678,12 +676,31 @@ function t
             end
         case l listar
             tmux ls
+        case g grupi
+            # Nova sesiono grupita kun ekzistanta
+            if test -z "$argv[2]"
+                echo "Sesioni:"
+                tmux ls 2>/dev/null; or echo "  (nula)"
+                echo ""
+                commandline -i "t g "
+            else
+                # Krei grupitan sesion kun unika nomo
+                set -l base $argv[2]
+                set -l suffix 2
+                set -l new_name "$base-$suffix"
+                while tmux has-session -t $new_name 2>/dev/null
+                    set suffix (math $suffix + 1)
+                    set new_name "$base-$suffix"
+                end
+                tmux new-session -t $base -s $new_name
+            end
         case h help
             echo "t - tmux rapida komandi"
             echo ""
             echo "  t           - startar/atar monitor (gv)"
             echo "  t a [nomo]  - atar a sesiono"
             echo "  t n [nomo]  - nova sesiono"
+            echo "  t g [nomo]  - nova sesiono grupita"
             echo "  t k [nomo]  - kilar sesiono"
             echo "  t l         - listar sesioni"
         case '*'
