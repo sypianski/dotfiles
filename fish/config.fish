@@ -125,6 +125,79 @@ function sinkronigar
 end
 alias sync 'sinkronigar'  # szybki alias
 
+# sync-status: sprawdź stan synchronizacji
+function sync-status
+    set -l green (set_color green)
+    set -l red (set_color red)
+    set -l yellow (set_color yellow)
+    set -l cyan (set_color cyan)
+    set -l norm (set_color normal)
+
+    echo "$cyan══════ Sync Status ══════$norm"
+
+    # GDrive mount
+    echo -n "GDrive:   "
+    if mountpoint -q ~/mnt/gdrive 2>/dev/null
+        echo "$green""OK$norm"
+    else
+        echo "$red""NOT MOUNTED$norm (muntar-gdrive)"
+    end
+
+    # Syncthing
+    echo -n "Syncthing: "
+    if systemctl --user is-active syncthing >/dev/null 2>&1
+        echo "$green""ON$norm"
+    else
+        echo "$yellow""OFF$norm (sync on)"
+    end
+
+    echo "$cyan────── Foldery ──────$norm"
+
+    # vault1
+    echo -n "vault1:   "
+    if test -d ~/vulti/vault1 -a -r ~/vulti/vault1
+        set -l count (ls ~/vulti/vault1 2>/dev/null | wc -l)
+        echo "$green""OK$norm ($count items)"
+    else
+        echo "$red""NIEDOSTĘPNY$norm"
+    end
+
+    # klavari
+    echo -n "klavari:  "
+    if test -d ~/klavari -a -r ~/klavari
+        set -l count (ls ~/klavari 2>/dev/null | wc -l)
+        echo "$green""OK$norm ($count items)"
+    else
+        echo "$red""NIEDOSTĘPNY$norm"
+    end
+
+    # projekti
+    echo -n "projekti: "
+    if test -d ~/projekti -a -r ~/projekti
+        set -l count (ls ~/projekti 2>/dev/null | wc -l)
+        echo "$green""OK$norm ($count items)"
+    else
+        echo "$red""NIEDOSTĘPNY$norm"
+    end
+
+    # sajeco (Syncthing)
+    echo -n "sajeco:   "
+    if test -d ~/vulti/sajeco
+        echo "$green""OK$norm (ST)"
+    else
+        echo "$red""BRAK$norm"
+    end
+
+    # sse1k (Syncthing)
+    echo -n "sse1k:    "
+    if test -d ~/vulti/sse1k
+        echo "$green""OK$norm (ST)"
+    else
+        echo "$red""BRAK$norm"
+    end
+end
+alias ss 'sync-status'
+
 # Funkcja do wstawiania komendy attach (musi być zdefiniowana globalnie)
 function _vps_tmux_attach --on-event fish_prompt
     if set -q __vps_attach_pending
@@ -723,6 +796,20 @@ function fish_greeting
 
     # RAM, swap
     echo "$cyan""ram:$norm $mem_color$mem_avail_gb$norm/$mem_total_gb""g  $cyan""swap:$norm $swap_used_gb/$swap_total_gb""g"
+
+    # Sync status (kompakta)
+    set -l gdrive_ok (mountpoint -q ~/mnt/gdrive 2>/dev/null; and echo 1; or echo 0)
+    set -l st_ok (systemctl --user is-active syncthing >/dev/null 2>&1; and echo 1; or echo 0)
+
+    echo -n "$cyan""sync:$norm "
+    if test $gdrive_ok -eq 1 -a $st_ok -eq 1
+        echo (set_color green)"OK"$norm
+    else
+        set -l issues
+        test $gdrive_ok -eq 0; and set -a issues "gdrive"
+        test $st_ok -eq 0; and set -a issues "ST"
+        echo (set_color red)"⚠ "(string join ", " $issues)$norm
+    end
 
     # Averto (nur se problemo)
     if test $ram_problem -eq 1

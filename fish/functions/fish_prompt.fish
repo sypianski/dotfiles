@@ -1,7 +1,10 @@
 function fish_prompt
-    if set -q SSH_CLIENT
-        echo 'masawayh > '
-    else
-        echo 'macOS > '
+    set -l icon "›"
+    switch (hostname)
+        case masawayh
+            set icon "۩"
+        case ibn-masawayh
+            set icon "۞"
     end
+    echo -n (set_color -o magenta)$icon(set_color normal)' '
 end
