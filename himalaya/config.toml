@@ -1,0 +1,97 @@
+[accounts.gmail]
+default = true
+email = "jakub.sypianski@gmail.com"
+display-name = "Jakub Sypiański"
+
+folder.alias.inbox = "INBOX"
+folder.alias.sent = "[Gmail]/Sent Mail"
+folder.alias.drafts = "[Gmail]/Drafts"
+folder.alias.trash = "[Gmail]/Trash"
+
+backend.type = "imap"
+backend.host = "imap.gmail.com"
+backend.port = 993
+backend.login = "jakub.sypianski@gmail.com"
+backend.auth.type = "password"
+backend.auth.cmd = "grep GMAIL_APP_PASSWORD ~/.secrets | awk '{$1=$2=$3=\"\"; print substr($0,4)}'"
+
+message.send.backend.type = "smtp"
+message.send.backend.host = "smtp.gmail.com"
+message.send.backend.port = 465
+message.send.backend.login = "jakub.sypianski@gmail.com"
+message.send.backend.auth.type = "password"
+message.send.backend.auth.cmd = "grep GMAIL_APP_PASSWORD ~/.secrets | awk '{$1=$2=$3=\"\"; print substr($0,4)}'"
+
+[accounts.unive]
+email = "jakub.sypianski@unive.it"
+display-name = "Jakub Sypiański"
+
+folder.alias.inbox = "INBOX"
+folder.alias.sent = "[Gmail]/Sent Mail"
+folder.alias.drafts = "[Gmail]/Drafts"
+folder.alias.trash = "[Gmail]/Trash"
+
+backend.type = "imap"
+backend.host = "127.0.0.1"
+backend.port = 2993
+backend.encryption.type = "none"
+backend.login = "jakub.sypianski@unive.it"
+backend.auth.type = "password"
+backend.auth.cmd = "echo placeholder"
+
+message.send.backend.type = "smtp"
+message.send.backend.host = "127.0.0.1"
+message.send.backend.port = 2465
+message.send.backend.encryption.type = "none"
+message.send.backend.login = "jakub.sypianski@unive.it"
+message.send.backend.auth.type = "password"
+message.send.backend.auth.cmd = "echo placeholder"
+
+[accounts.outlook]
+email = "sypianski@outlook.com"
+display-name = "Jakub Sypiański"
+
+folder.alias.inbox = "INBOX"
+folder.alias.sent = "Sent"
+folder.alias.drafts = "Drafts"
+folder.alias.trash = "Deleted"
+
+backend.type = "imap"
+backend.host = "127.0.0.1"
+backend.port = 1993
+backend.encryption.type = "none"
+backend.login = "sypianski@outlook.com"
+backend.auth.type = "password"
+backend.auth.cmd = "~/.config/himalaya/outlook-oauth.py token"
+
+message.send.backend.type = "smtp"
+message.send.backend.host = "127.0.0.1"
+message.send.backend.port = 1587
+message.send.backend.encryption.type = "none"
+message.send.backend.login = "sypianski@outlook.com"
+message.send.backend.auth.type = "password"
+message.send.backend.auth.cmd = "~/.config/himalaya/outlook-oauth.py token"
+
+[accounts.icloud]
+email = "sypianski@me.com"
+display-name = "Jakub Sypiański"
+
+folder.alias.inbox = "INBOX"
+folder.alias.sent = "Sent Messages"
+folder.alias.drafts = "Drafts"
+folder.alias.trash = "Deleted Messages"
+
+backend.type = "imap"
+backend.host = "imap.mail.me.com"
+backend.port = 993
+backend.login = "sypianski@me.com"
+backend.auth.type = "password"
+backend.auth.cmd = "grep ICLOUD_APP_PASSWORD ~/.secrets | awk '{$1=$2=$3=\"\"; print substr($0,4)}'"
+
+message.send.backend.type = "smtp"
+message.send.backend.host = "smtp.mail.me.com"
+message.send.backend.port = 587
+message.send.backend.encryption.type = "start-tls"
+message.send.backend.login = "sypianski@me.com"
+message.send.backend.auth.type = "password"
+message.send.backend.auth.cmd = "grep ICLOUD_APP_PASSWORD ~/.secrets | awk '{$1=$2=$3=\"\"; print substr($0,4)}'"
