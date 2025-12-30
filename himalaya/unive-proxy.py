@@ -13,7 +13,7 @@ import sys
 IMAP_LOCAL_PORT = 2993
 SMTP_LOCAL_PORT = 2465
 GOOGLE_IMAP = ("imap.gmail.com", 993)
-GOOGLE_SMTP = ("smtp.gmail.com", 465)
+GOOGLE_SMTP = ("smtp.gmail.com", 587)  # port 587 with STARTTLS
 USER = "jakub.sypianski@unive.it"
 
 def get_token():
@@ -85,43 +85,92 @@ def handle_imap(client_sock):
 
 def handle_smtp(client_sock):
     try:
-        ctx = ssl.create_default_context()
-        server_sock = ctx.wrap_socket(socket.socket(), server_hostname=GOOGLE_SMTP[0])
+        print("[SMTP] New connection, connecting to Gmail...", flush=True)
+        server_sock = socket.socket()
+        server_sock.settimeout(30)
         server_sock.connect(GOOGLE_SMTP)
+        server_sock.recv(4096)  # greeting
+        server_sock.send(b"EHLO localhost\r\n")
+        server_sock.recv(4096)  # capabilities
+        server_sock.send(b"STARTTLS\r\n")
+        server_sock.recv(4096)  # ready
+        ctx = ssl.create_default_context()
+        server_sock = ctx.wrap_socket(server_sock, server_hostname=GOOGLE_SMTP[0])
+        server_sock.send(b"EHLO localhost\r\n")
+        server_sock.recv(4096)  # capabilities after TLS
+        print("[SMTP] Connected with TLS", flush=True)
 
-        greeting = server_sock.recv(4096)
-        client_sock.send(greeting)
+        client_sock.send(b"220 localhost SMTP proxy ready\r\n")
 
         authenticated = False
+        buffer = ""
 
         while True:
             data = client_sock.recv(4096)
             if not data:
                 break
 
-            line = data.decode('utf-8', errors='replace').strip()
-            line_upper = line.upper()
+            buffer += data.decode('utf-8', errors='replace')
+            while '\n' in buffer:
+                line, buffer = buffer.split('\n', 1)
+                line = line.strip()
+                if not line:
+                    continue
+                line_upper = line.upper()
+                print(f"[SMTP] Client: {line[:60]}", flush=True)
 
-            if line_upper.startswith('AUTH') and not authenticated:
-                try:
-                    token = get_token()
-                    auth_string = xoauth2_string(USER, token)
-                    server_sock.send(f"AUTH XOAUTH2 {auth_string}\r\n".encode())
+                if line_upper.startswith('EHLO') or line_upper.startswith('HELO'):
+                    client_sock.send(b"250-localhost\r\n250-AUTH PLAIN LOGIN\r\n250 OK\r\n")
+                    continue
+
+                if line_upper.startswith('AUTH') and not authenticated:
+                    try:
+                        token = get_token()
+                        auth_string = xoauth2_string(USER, token)
+                        server_sock.send(f"AUTH XOAUTH2 {auth_string}\r\n".encode())
+                        response = server_sock.recv(4096)
+                        print(f"[SMTP] Auth response: {response}", flush=True)
+                        if b'235' in response:
+                            authenticated = True
+                            client_sock.send(b"235 Authentication successful\r\n")
+                        else:
+                            client_sock.send(b"535 Authentication failed\r\n")
+                    except Exception as e:
+                        print(f"[SMTP] Auth error: {e}", flush=True)
+                        client_sock.send(f"535 Auth failed: {e}\r\n".encode())
+                    continue
+
+                server_sock.send((line + "\r\n").encode())
+
+                if line_upper == 'DATA':
                     response = server_sock.recv(4096)
+                    print(f"[SMTP] DATA response: {response}", flush=True)
                     client_sock.send(response)
-                    if b'235' in response:
-                        authenticated = True
-                except Exception as e:
-                    client_sock.send(f"535 Auth failed: {e}\r\n".encode())
-                continue
+                    if b'354' in response:
+                        if buffer:
+                            server_sock.send(buffer.encode())
+                            buffer = ""
+                        body = b""
+                        while True:
+                            chunk = client_sock.recv(4096)
+                            if not chunk:
+                                break
+                            body += chunk
+                            server_sock.send(chunk)
+                            if body.endswith(b'\r\n.\r\n'):
+                                break
+                        response = server_sock.recv(4096)
+                        print(f"[SMTP] Send result: {response}", flush=True)
+                        client_sock.send(response)
+                    continue
 
-            server_sock.send(data)
-            response = server_sock.recv(65536)
-            if response:
-                client_sock.send(response)
+                response = server_sock.recv(65536)
+                if response:
+                    print(f"[SMTP] Response: {response[:60]}", flush=True)
+                    client_sock.send(response)
 
     except Exception as e:
-        print(f"SMTP error: {e}")
+        print(f"SMTP error: {e}", flush=True)
     finally:
         client_sock.close()
         try:
