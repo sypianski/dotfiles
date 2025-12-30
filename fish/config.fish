@@ -11,7 +11,7 @@ alias highlights 'ssh jakub@100.110.74.7 "cd ~/vulti/vulto_de_sajeso && python3 
 alias obsidian 'ssh jakub@100.110.74.7 "cd ~/vulti/vulto && vim"'
 alias vps 'ssh yaqub@188.166.23.122'
 alias masawayh 'ssh yaqub@188.166.23.122'
-alias cc 'claude'
+alias cc 'claude --dangerously-skip-permissions'
 alias corne42 '~/klavaro/zmk/flash.sh'
 alias rikargar 'source ~/fish/config.fish'  # reload config
 alias muntar-gdrive 'rclone mount gdrive: ~/mnt/gdrive --vfs-cache-mode full --daemon'
@@ -702,8 +702,14 @@ function fish_greeting
     set -l cyan (set_color -o cyan)
     set -l norm (set_color normal)
 
-    # Centered title
-    set -l title "۞ IBN MASAWAYH ۞"
+    # Centered title (zależny od serwera)
+    set -l title "◆ "(hostname)" ◆"
+    switch (hostname)
+        case masawayh
+            set title "۩ MASAWAYH ۩"
+        case ibn-masawayh
+            set title "۞ IBN MASAWAYH ۞"
+    end
     set -l title_len (string length $title)
     set -l padding (string repeat -n (math --scale=0 "($width - $title_len) / 2") " ")
 
