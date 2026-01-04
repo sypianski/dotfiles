@@ -119,6 +119,16 @@ install_dependencies() {
         packages+=("htop")
     fi
 
+    if ask "Zainstalować Node.js (wymagane dla Claude Code)?"; then
+        if [[ "$PLATFORM" == "termux" ]]; then
+            packages+=("nodejs")
+        elif [[ "$PLATFORM" == "macos" ]]; then
+            packages+=("node")
+        else
+            packages+=("nodejs" "npm")
+        fi
+    fi
+
     if [[ ${#packages[@]} -eq 0 ]]; then
         echo -e "${YELLOW}[!]${NC} Brak pakietów do instalacji"
         return
@@ -132,6 +142,20 @@ install_dependencies() {
     eval "$PKG_INSTALL ${packages[*]}"
 
     echo -e "${GREEN}[OK]${NC} Zależności zainstalowane"
+}
+
+# === Instalacja Claude Code ===
+install_claude() {
+    if ! command -v npm &> /dev/null; then
+        return
+    fi
+
+    echo ""
+    if ask "Zainstalować Claude Code?"; then
+        echo -e "${YELLOW}[*]${NC} Instaluję Claude Code..."
+        npm install -g @anthropic-ai/claude-code
+        echo -e "${GREEN}[OK]${NC} Claude Code zainstalowany"
+    fi
 }
 
 # === Tworzenie symlinków ===
@@ -243,6 +267,7 @@ main() {
         install_dependencies
     fi
 
+    install_claude
     create_symlinks
     set_default_shell
     install_tmux_plugins
