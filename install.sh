@@ -271,16 +271,20 @@ copy_secrets() {
         read -p "Podaj nazwę użytkownika [yaqub]: " -r remote_user < /dev/tty
         remote_user="${remote_user:-yaqub}"
 
-        echo -e "${YELLOW}[*]${NC} Kopiuję klucze SSH..."
-        scp "$remote_user@$server:~/.ssh/id_ed25519" ~/.ssh/ 2>/dev/null && \
-        scp "$remote_user@$server:~/.ssh/id_ed25519.pub" ~/.ssh/ 2>/dev/null && \
-        echo -e "${GREEN}[OK]${NC} Klucze SSH skopiowane" || \
-        echo -e "${YELLOW}[!]${NC} Nie udało się skopiować kluczy SSH"
+        echo -e "${YELLOW}[*]${NC} Kopiuję klucze SSH (podaj hasło jeśli zapyta)..."
+        if scp "$remote_user@$server:~/.ssh/id_ed25519" ~/.ssh/ && \
+           scp "$remote_user@$server:~/.ssh/id_ed25519.pub" ~/.ssh/; then
+            echo -e "${GREEN}[OK]${NC} Klucze SSH skopiowane"
+        else
+            echo -e "${YELLOW}[!]${NC} Nie udało się skopiować kluczy SSH"
+        fi
 
         echo -e "${YELLOW}[*]${NC} Kopiuję ~/.secrets..."
-        scp "$remote_user@$server:~/.secrets" ~/.secrets 2>/dev/null && \
-        echo -e "${GREEN}[OK]${NC} Secrets skopiowane" || \
-        echo -e "${YELLOW}[!]${NC} Nie udało się skopiować secrets"
+        if scp "$remote_user@$server:~/.secrets" ~/.secrets; then
+            echo -e "${GREEN}[OK]${NC} Secrets skopiowane"
+        else
+            echo -e "${YELLOW}[!]${NC} Nie udało się skopiować secrets"
+        fi
 
         chmod 700 ~/.ssh 2>/dev/null
         chmod 600 ~/.ssh/* 2>/dev/null
