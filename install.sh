@@ -10,11 +10,12 @@ echo "Instaluję dotfiles z $DOTFILES..."
 mkdir -p ~/.config
 
 # Usuń istniejące pliki/katalogi jeśli istnieją
-rm -rf ~/.config/fish ~/.config/nvim ~/.tmux.conf ~/.tmux ~/.termux ~/.bashrc ~/.gitconfig ~/.hushlogin
+rm -rf ~/.config/fish ~/.config/nvim ~/.config/himalaya ~/.tmux.conf ~/.tmux ~/.termux ~/.bashrc ~/.gitconfig ~/.hushlogin
 
 # Utwórz symlinki
 ln -s "$DOTFILES/fish" ~/.config/fish
 ln -s "$DOTFILES/nvim" ~/.config/nvim
+ln -s "$DOTFILES/himalaya" ~/.config/himalaya
 ln -s "$DOTFILES/.tmux.conf" ~/.tmux.conf
 ln -s "$DOTFILES/.tmux" ~/.tmux
 ln -s "$DOTFILES/termux" ~/.termux
