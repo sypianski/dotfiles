@@ -51,6 +51,11 @@ ask() {
         return 0
     fi
 
+    # Jeśli nie ma terminala (np. curl | bash), użyj domyślnej odpowiedzi
+    if [[ ! -t 0 ]]; then
+        [[ "${2:-y}" == "y" ]] && return 0 || return 1
+    fi
+
     local prompt="$1"
     local default="${2:-y}"
 
@@ -60,7 +65,7 @@ ask() {
         prompt="$prompt [y/N] "
     fi
 
-    read -p "$prompt" -n 1 -r
+    read -p "$prompt" -n 1 -r < /dev/tty
     echo
 
     if [[ -z "$REPLY" ]]; then
