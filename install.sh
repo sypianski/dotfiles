@@ -198,16 +198,19 @@ set_default_shell() {
     echo ""
     if ask "Ustawić Fish jako domyślną powłokę?"; then
         if [[ "$PLATFORM" == "termux" ]]; then
-            chsh -s "$fish_path"
+            chsh -s "$fish_path" && echo -e "${GREEN}[OK]${NC} Fish ustawiony jako domyślna powłoka"
         else
             # Dodaj fish do /etc/shells jeśli nie ma
             if ! grep -q "$fish_path" /etc/shells 2>/dev/null; then
                 echo -e "${YELLOW}[*]${NC} Dodaję fish do /etc/shells..."
                 echo "$fish_path" | sudo tee -a /etc/shells > /dev/null
             fi
-            chsh -s "$fish_path"
+            if chsh -s "$fish_path" 2>/dev/null; then
+                echo -e "${GREEN}[OK]${NC} Fish ustawiony jako domyślna powłoka (zaloguj się ponownie)"
+            else
+                echo -e "${YELLOW}[!]${NC} Nie udało się zmienić powłoki. Uruchom ręcznie: chsh -s $fish_path"
+            fi
         fi
-        echo -e "${GREEN}[OK]${NC} Fish ustawiony jako domyślna powłoka (zaloguj się ponownie)"
     fi
 }
 
