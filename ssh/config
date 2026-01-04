@@ -1,0 +1,8 @@
+Host github.com
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+
+Host masawayh
+    HostName 157.180.41.230
+    User yaqub
+    IdentityFile ~/.ssh/id_ed25519
