@@ -234,24 +234,25 @@ function __auto_muntar_nubi
 end
 
 # Auto-start tmux (diferanta konduto sur VPS vs lokale)
-if status is-interactive
-    and not set -q TMUX
-    if string match -q '*masawayh*' (hostname)
-        # VPS: muntar nubi se ne ja muntita
-        if not set -q __nubi_muntita
-            set -g __nubi_muntita 1
-            __auto_muntar_nubi 2>/dev/null &
-        end
-        # VPS: startar monitor-sesiono kun btop (se ne ekzistas)
-        if not tmux has-session -t monitor 2>/dev/null
-            tmux new-session -d -s monitor btop
-        end
-        # VPS: nur montrar saluto, uzanto elektas sesion
-    else
-        # Lokale: auto-attach a sesiono main
-        tmux attach -dt main || tmux new -s main
-    end
-end
+# Malŝaltita - uzanto povas mane ruli: tmux attach || tmux new -s main
+# if status is-interactive
+#     and not set -q TMUX
+#     if string match -q '*masawayh*' (hostname)
+#         # VPS: muntar nubi se ne ja muntita
+#         if not set -q __nubi_muntita
+#             set -g __nubi_muntita 1
+#             __auto_muntar_nubi 2>/dev/null &
+#         end
+#         # VPS: startar monitor-sesiono kun btop (se ne ekzistas)
+#         if not tmux has-session -t monitor 2>/dev/null
+#             tmux new-session -d -s monitor btop
+#         end
+#         # VPS: nur montrar saluto, uzanto elektas sesion
+#     else
+#         # Lokale: auto-attach a sesiono main
+#         tmux attach -dt main || tmux new -s main
+#     end
+# end
 
 # ccusage - monitoring tokenów Claude Code
 alias ccu='ccusage'
