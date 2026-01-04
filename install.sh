@@ -126,10 +126,10 @@ install_dependencies() {
 
     echo ""
     echo -e "${YELLOW}[*]${NC} Aktualizuję listę pakietów..."
-    $PKG_UPDATE
+    eval "$PKG_UPDATE"
 
     echo -e "${YELLOW}[*]${NC} Instaluję: ${packages[*]}"
-    $PKG_INSTALL "${packages[@]}"
+    eval "$PKG_INSTALL ${packages[*]}"
 
     echo -e "${GREEN}[OK]${NC} Zależności zainstalowane"
 }
