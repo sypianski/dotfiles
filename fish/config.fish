@@ -14,7 +14,7 @@ alias masawayh 'ssh yaqub@188.166.23.122'
 alias cc 'claude --dangerously-skip-permissions'
 alias corne42 '~/klavaro/zmk/flash.sh'
 function rikargar  # reload fish + tmux config
-    source ~/fish/config.fish
+    source ~/.config/fish/config.fish
     if set -q TMUX
         tmux source-file ~/.tmux.conf
         echo "Fish + tmux reloaded"
