@@ -1,35 +1,19 @@
 if status is-interactive
     # Commands to run in interactive sessions can go here
 
-    # Auto-sync dotfiles (max once per day)
-    set -l dotfiles_dir ~/dotfiles
-    set -l sync_marker ~/.cache/dotfiles-last-sync
-    set -l now (date +%s)
-    set -l day_seconds 86400
-
-    if test -d $dotfiles_dir/.git
-        set -l last_sync 0
-        if test -f $sync_marker
-            set last_sync (cat $sync_marker 2>/dev/null; or echo 0)
-        end
-
-        if test (math "$now - $last_sync") -ge $day_seconds
-            mkdir -p ~/.cache
-            git -C $dotfiles_dir fetch --quiet 2>/dev/null
-            set -l local_head (git -C $dotfiles_dir rev-parse HEAD 2>/dev/null)
-            set -l remote_head (git -C $dotfiles_dir rev-parse '@{u}' 2>/dev/null)
-
+    # Auto-sync dotfiles (background, every shell start)
+    if test -d ~/dotfiles/.git
+        fish -c '
+            git -C ~/dotfiles fetch --quiet 2>/dev/null
+            set -l local_head (git -C ~/dotfiles rev-parse HEAD 2>/dev/null)
+            set -l remote_head (git -C ~/dotfiles rev-parse "@{u}" 2>/dev/null)
             if test "$local_head" != "$remote_head"
-                # Check for local changes
-                if test -z (git -C $dotfiles_dir status --porcelain 2>/dev/null)
-                    git -C $dotfiles_dir pull --quiet 2>/dev/null
-                    and echo (set_color green)"dotfiles synced"(set_color normal)
-                else
-                    echo (set_color yellow)"dotfiles: lokalne zmiany, pomiń sync"(set_color normal)
+                if test -z (git -C ~/dotfiles status --porcelain 2>/dev/null)
+                    git -C ~/dotfiles pull --quiet 2>/dev/null
                 end
             end
-            echo $now > $sync_marker
-        end
+        ' &
+        disown
     end
 end
 
