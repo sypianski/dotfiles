@@ -2,7 +2,12 @@ Host github.com
     IdentityFile ~/.ssh/id_ed25519
     IdentitiesOnly yes
 
-Host ibn abu
+Host ibn
     HostName 157.180.41.230
+    User yaqub
+    IdentityFile ~/.ssh/id_ed25519
+
+Host abu
+    HostName 188.166.23.122
     User yaqub
     IdentityFile ~/.ssh/id_ed25519
