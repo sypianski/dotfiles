@@ -115,16 +115,8 @@ install_dependencies() {
         fi
     fi
 
-    if ask "Zainstalować monitor systemu (btop/htop)?"; then
-        # btop dostępny tylko w nowszych systemach
-        if [[ "$PLATFORM" == "termux" ]] || [[ "$PLATFORM" == "macos" ]]; then
-            packages+=("btop")
-        elif apt-cache show btop &>/dev/null; then
-            packages+=("btop")
-        else
-            echo -e "${YELLOW}[!]${NC} btop niedostępny, instaluję htop"
-            packages+=("htop")
-        fi
+    if ask "Zainstalować monitor systemu (htop)?"; then
+        packages+=("htop")
     fi
 
     if [[ ${#packages[@]} -eq 0 ]]; then
