@@ -115,3 +115,8 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# Auto-start Fish shell
+if command -v fish &> /dev/null; then
+    exec fish
+fi
