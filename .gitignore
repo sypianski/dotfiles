@@ -2,3 +2,4 @@
 .ssh/
 *.key
 *.pem
+termux/shell
