@@ -7,10 +7,10 @@ DOTFILES="$HOME/dotfiles"
 
 echo "Instaluję dotfiles z $DOTFILES..."
 
-mkdir -p ~/.config ~/.ssh
+mkdir -p ~/.config ~/.ssh ~/.claude
 
 # Usuń istniejące pliki/katalogi jeśli istnieją
-rm -rf ~/.config/fish ~/.config/nvim ~/.config/himalaya ~/.tmux.conf ~/.tmux ~/.termux ~/.bashrc ~/.gitconfig ~/.hushlogin ~/.ssh/config
+rm -rf ~/.config/fish ~/.config/nvim ~/.config/himalaya ~/.tmux.conf ~/.tmux ~/.termux ~/.bashrc ~/.gitconfig ~/.hushlogin ~/.ssh/config ~/.claude/settings.local.json
 
 # Utwórz symlinki
 ln -s "$DOTFILES/fish" ~/.config/fish
@@ -23,6 +23,7 @@ ln -s "$DOTFILES/.bashrc" ~/.bashrc
 ln -s "$DOTFILES/.gitconfig" ~/.gitconfig
 ln -s "$DOTFILES/.hushlogin" ~/.hushlogin
 ln -s "$DOTFILES/ssh/config" ~/.ssh/config
+ln -s "$DOTFILES/.claude/settings.local.json" ~/.claude/settings.local.json
 
 echo ""
 echo "Symlinki utworzone!"
