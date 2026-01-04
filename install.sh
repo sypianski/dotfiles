@@ -5,7 +5,24 @@
 set -e
 DOTFILES="$HOME/dotfiles"
 
+# Detekcja Termux
+if [ -n "$PREFIX" ] && [ -d "/data/data/com.termux" ]; then
+    IS_TERMUX=1
+    PKG="pkg"
+    echo "Wykryto Termux"
+else
+    IS_TERMUX=0
+    PKG="sudo apt"
+    echo "Wykryto Linux"
+fi
+
 echo "Instaluję dotfiles z $DOTFILES..."
+
+# Instaluj fish jeśli brakuje
+if ! command -v fish &> /dev/null; then
+    echo "Instaluję fish..."
+    $PKG install fish -y
+fi
 
 mkdir -p ~/.config
 
