@@ -8,7 +8,7 @@ if status is-interactive
             set -l local_head (git -C ~/dotfiles rev-parse HEAD 2>/dev/null)
             set -l remote_head (git -C ~/dotfiles rev-parse "@{u}" 2>/dev/null)
             if test "$local_head" != "$remote_head"
-                if test -z (git -C ~/dotfiles status --porcelain 2>/dev/null)
+                if not git -C ~/dotfiles status --porcelain 2>/dev/null | string length -q
                     git -C ~/dotfiles pull --quiet 2>/dev/null
                 end
             end
