@@ -256,6 +256,37 @@ install_tmux_plugins() {
     fi
 }
 
+# === Kopiowanie sekretów z serwera ===
+copy_secrets() {
+    echo ""
+    if ask "Skopiować klucze SSH i sekrety z serwera?"; then
+        echo -e "${BLUE}[i]${NC} Dostępne serwery: ibn (157.180.41.230), abu (188.166.23.122)"
+        read -p "Podaj IP lub nazwę serwera: " -r server < /dev/tty
+
+        if [[ -z "$server" ]]; then
+            echo -e "${YELLOW}[!]${NC} Pominięto kopiowanie"
+            return
+        fi
+
+        read -p "Podaj nazwę użytkownika [yaqub]: " -r remote_user < /dev/tty
+        remote_user="${remote_user:-yaqub}"
+
+        echo -e "${YELLOW}[*]${NC} Kopiuję klucze SSH..."
+        scp "$remote_user@$server:~/.ssh/id_ed25519" ~/.ssh/ 2>/dev/null && \
+        scp "$remote_user@$server:~/.ssh/id_ed25519.pub" ~/.ssh/ 2>/dev/null && \
+        echo -e "${GREEN}[OK]${NC} Klucze SSH skopiowane" || \
+        echo -e "${YELLOW}[!]${NC} Nie udało się skopiować kluczy SSH"
+
+        echo -e "${YELLOW}[*]${NC} Kopiuję ~/.secrets..."
+        scp "$remote_user@$server:~/.secrets" ~/.secrets 2>/dev/null && \
+        echo -e "${GREEN}[OK]${NC} Secrets skopiowane" || \
+        echo -e "${YELLOW}[!]${NC} Nie udało się skopiować secrets"
+
+        chmod 700 ~/.ssh 2>/dev/null
+        chmod 600 ~/.ssh/* 2>/dev/null
+    fi
+}
+
 # === Main ===
 main() {
     echo -e "${GREEN}=== Instalacja dotfiles ===${NC}"
@@ -271,13 +302,10 @@ main() {
     create_symlinks
     set_default_shell
     install_tmux_plugins
+    copy_secrets
 
     echo ""
     echo -e "${GREEN}=== Instalacja zakończona ===${NC}"
-    echo ""
-    echo -e "${YELLOW}Pamiętaj o ręcznym skopiowaniu:${NC}"
-    echo "  - ~/.secrets (API keys)"
-    echo "  - ~/.ssh/id_* (klucze SSH)"
 }
 
 main
