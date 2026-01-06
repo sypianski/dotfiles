@@ -6,7 +6,16 @@
       "Bash(git config:*)",
       "Bash(git push)",
       "Bash(git pull:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(cat:*)",
+      "Bash(pkg install:*)",
+      "Bash(chsh:*)",
+      "Bash(command -v:*)",
+      "Bash(mkdir:*)",
+      "Bash(rclone listremotes:*)",
+      "Bash(scp:*)",
+      "Bash(ssh-keyscan:*)",
+      "Bash(~/.ssh/known_hosts)"
     ]
   }
 }
