@@ -17,6 +17,7 @@ Dotfiles are stored in `~/dotfiles/` (a regular git repo) and symlinked to their
 ~/nvim/           -> ~/dotfiles/nvim/
 ~/termux/         -> ~/dotfiles/termux/
 ~/.termux         -> ~/termux (for Termux app compatibility)
+~/CLAUDE.md       -> ~/dotfiles/CLAUDE.md
 ```
 
 **Working with dotfiles:**
