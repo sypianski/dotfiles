@@ -115,6 +115,10 @@ install_dependencies() {
         fi
     fi
 
+    if ask "Zainstalować rclone (do montowania GDrive/Dropbox)?"; then
+        packages+=("rclone")
+    fi
+
     if ask "Zainstalować monitor systemu (htop)?"; then
         packages+=("htop")
     fi
@@ -163,7 +167,7 @@ create_symlinks() {
     echo ""
     echo -e "${BLUE}=== Tworzenie symlinków ===${NC}"
 
-    mkdir -p ~/.config ~/.ssh ~/.claude
+    mkdir -p ~/.config ~/.ssh ~/.claude ~/mnt/gdrive ~/mnt/dropbox
 
     # Lista symlinków: źródło -> cel
     declare -A symlinks=(
@@ -216,7 +220,7 @@ set_default_shell() {
         return
     fi
 
-    local fish_path=$(which fish)
+    local fish_path=$(command -v fish)
     local current_shell=$(basename "$SHELL")
 
     if [[ "$current_shell" == "fish" ]]; then
@@ -284,6 +288,15 @@ copy_secrets() {
             echo -e "${GREEN}[OK]${NC} Secrets skopiowane"
         else
             echo -e "${YELLOW}[!]${NC} Nie udało się skopiować secrets"
+        fi
+
+        # Kopiuj konfigurację rclone (gdrive/dropbox)
+        echo -e "${YELLOW}[*]${NC} Kopiuję konfigurację rclone..."
+        mkdir -p ~/.config/rclone
+        if scp "$remote_user@$server:~/.config/rclone/rclone.conf" ~/.config/rclone/; then
+            echo -e "${GREEN}[OK]${NC} Konfiguracja rclone skopiowana"
+        else
+            echo -e "${YELLOW}[!]${NC} Nie udało się skopiować konfiguracji rclone (uruchom: rclone config)"
         fi
 
         chmod 700 ~/.ssh 2>/dev/null
