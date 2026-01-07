@@ -3,4 +3,5 @@
 *.key
 *.pem
 termux/shell
+termux/colors.properties
 .tmux/plugins/
