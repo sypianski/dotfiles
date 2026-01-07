@@ -678,7 +678,13 @@ function t
             if test -z "$argv[2]"
                 commandline -i "tmux new -s "
             else
-                tmux new -s $argv[2]
+                if set -q TMUX
+                    # Interne de tmux: krei detaĉite kaj ŝanĝi
+                    tmux new-session -d -s $argv[2]
+                    tmux switch-client -t $argv[2]
+                else
+                    tmux new -s $argv[2]
+                end
             end
         case k kilar
             # Kilar sesiono
