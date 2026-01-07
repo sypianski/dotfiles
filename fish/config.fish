@@ -855,10 +855,16 @@ function fish_greeting
     echo "$cyan""ram:$norm $mem_color$mem_avail_gb$norm/$mem_total_gb""g  $cyan""swap:$norm $swap_used_gb/$swap_total_gb""g"
 
     # Sync status (kompakta)
-    # Termux: check if gdrive is mounted via /proc/mounts
-    set -l gdrive_ok (grep -q "$HOME/mnt/gdrive" /proc/mounts 2>/dev/null; and echo 1; or echo 0)
-    # Termux: check if syncthing process is running
-    set -l st_ok (pgrep -x syncthing >/dev/null 2>&1; and echo 1; or echo 0)
+    set -l gdrive_ok 0
+    set -l st_ok 0
+    if set -q TERMUX_VERSION
+        # Termux: no mountpoint/systemctl
+        test -d ~/mnt/gdrive && grep -q gdrive /proc/mounts; and set gdrive_ok 1
+        pgrep -x syncthing >/dev/null 2>&1; and set st_ok 1
+    else
+        mountpoint -q ~/mnt/gdrive 2>/dev/null; and set gdrive_ok 1
+        systemctl --user is-active syncthing >/dev/null 2>&1; and set st_ok 1
+    end
 
     echo -n "$cyan""sync:$norm "
     if test $gdrive_ok -eq 1 -a $st_ok -eq 1

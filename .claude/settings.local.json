@@ -15,7 +15,8 @@
       "Bash(rclone listremotes:*)",
       "Bash(scp:*)",
       "Bash(ssh-keyscan:*)",
-      "Bash(~/.ssh/known_hosts)"
+      "Bash(~/.ssh/known_hosts)",
+      "Bash(git remote set-url:*)"
     ]
   }
 }
