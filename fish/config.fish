@@ -128,19 +128,31 @@ fish_hybrid_key_bindings
 bind -M insert \ea _fish_ai_autocomplete_or_fix
 bind \ea _fish_ai_autocomplete_or_fix
 
-# Syncthing toggle por vault sync
+# Syncthing toggle por vault sync (Termux-compatible)
 function sinkronigar
     switch $argv[1]
         case on
-            systemctl --user start syncthing
-            echo "Real-time sync ON"
+            if pgrep -x syncthing >/dev/null 2>&1
+                echo "Syncthing already running"
+            else
+                syncthing serve --no-browser >/dev/null 2>&1 &
+                disown
+                echo "Real-time sync ON"
+            end
         case off
-            systemctl --user stop syncthing
+            pkill -x syncthing 2>/dev/null
             echo "Syncthing paused - using git"
         case status
-            systemctl --user status syncthing
+            if pgrep -x syncthing >/dev/null 2>&1
+                echo "Syncthing: running (PID: "(pgrep -x syncthing)")"
+            else
+                echo "Syncthing: stopped"
+            end
         case restart r
-            systemctl --user restart syncthing
+            pkill -x syncthing 2>/dev/null
+            sleep 1
+            syncthing serve --no-browser >/dev/null 2>&1 &
+            disown
             echo "Syncthing restarted"
         case '*'
             echo "Usage: sinkronigar [on|off|status|restart]"
@@ -158,17 +170,17 @@ function sync-status
 
     echo "$cyan══════ Sync Status ══════$norm"
 
-    # GDrive mount
+    # GDrive mount (Termux: check /proc/mounts)
     echo -n "GDrive:   "
-    if mountpoint -q ~/mnt/gdrive 2>/dev/null
+    if grep -q "$HOME/mnt/gdrive" /proc/mounts 2>/dev/null
         echo "$green""OK$norm"
     else
         echo "$red""NOT MOUNTED$norm (muntar-gdrive)"
     end
 
-    # Syncthing
+    # Syncthing (Termux: check process)
     echo -n "Syncthing: "
-    if systemctl --user is-active syncthing >/dev/null 2>&1
+    if pgrep -x syncthing >/dev/null 2>&1
         echo "$green""ON$norm"
     else
         echo "$yellow""OFF$norm (sync on)"
@@ -223,12 +235,12 @@ alias ss 'sync-status'
 
 # Auto-muntar nubo-diski (nur sur VPS, nur unfoye)
 function __auto_muntar_nubi
-    # gdrive
-    if not mountpoint -q ~/mnt/gdrive 2>/dev/null
+    # gdrive (Termux: check /proc/mounts)
+    if not grep -q "$HOME/mnt/gdrive" /proc/mounts 2>/dev/null
         rclone mount gdrive: ~/mnt/gdrive --vfs-cache-mode full --daemon &
     end
-    # dropbox
-    if not mountpoint -q ~/mnt/dropbox 2>/dev/null
+    # dropbox (Termux: check /proc/mounts)
+    if not grep -q "$HOME/mnt/dropbox" /proc/mounts 2>/dev/null
         rclone mount dropbox: ~/mnt/dropbox --vfs-cache-mode full --daemon &
     end
 end
