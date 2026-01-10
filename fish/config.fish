@@ -857,9 +857,11 @@ function fish_greeting
     # Sync status (kompakta)
     set -l gdrive_ok 0
     set -l st_ok 0
+    set -l check_gdrive 1
     if set -q TERMUX_VERSION
-        # Termux: no mountpoint/systemctl
-        test -d ~/mnt/gdrive && grep -q gdrive /proc/mounts; and set gdrive_ok 1
+        # Termux: skip gdrive (no FUSE), only check Syncthing
+        set check_gdrive 0
+        set gdrive_ok 1
         pgrep -x syncthing >/dev/null 2>&1; and set st_ok 1
     else
         mountpoint -q ~/mnt/gdrive 2>/dev/null; and set gdrive_ok 1
@@ -871,7 +873,7 @@ function fish_greeting
         echo (set_color green)"OK"$norm
     else
         set -l issues
-        test $gdrive_ok -eq 0; and set -a issues "gdrive"
+        test $check_gdrive -eq 1 -a $gdrive_ok -eq 0; and set -a issues "gdrive"
         test $st_ok -eq 0; and set -a issues "ST"
         echo (set_color red)"⚠ "(string join ", " $issues)$norm
     end
